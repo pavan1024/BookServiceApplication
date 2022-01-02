@@ -69,18 +69,21 @@ public class BookService {
 		return status;
 	}
 	
-//	public String updateBook(Book book) {
-//		String status = "Book Updation Unsuccessful";
-//		Optional<Book> optionalBook = bookRepository.findByName(book.getName());
-//		if(optionalBook.isPresent()) {
-//			bookRepository.save(book);
-//			status = "Book Updated Successfully";
-//		}
-//		else {
-//			throw new RuntimeException("Book Not Found");
-//		}
-//		return status;
-//	}
+	public boolean updateBook(int id,BookDto bookDto) throws BookNotFoundException{
+		boolean status = false;
+		Optional<Book> book = bookRepository.findById(id);
+		if(book.isPresent()) {
+			book.get().setName(bookDto.getName());
+			book.get().setAuthor(bookDto.getAuthor());
+			book.get().setPublisher(bookDto.getPublisher());
+			bookRepository.save(book.get());
+			status = true;
+		}
+		else {
+			throw new BookNotFoundException("Book Not Found");
+		}
+		return status;
+	}
 	
 
 }

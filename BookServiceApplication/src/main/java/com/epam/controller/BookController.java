@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,6 +66,20 @@ public class BookController {
 			statusCode = HttpStatus.ACCEPTED;
 		} else {
 			status = "Book Deletion Unsuccessful";
+			statusCode = HttpStatus.NOT_FOUND;
+		}
+		return new ResponseEntity<>(status, statusCode);
+	}
+	
+	@PutMapping("/{book_id}")
+	public ResponseEntity<String> updateBook(@PathVariable int book_id,@RequestBody BookDto bookDto) throws BookNotFoundException{
+		String status = "";
+		HttpStatus statusCode = null;
+		if (bookService.updateBook(book_id,bookDto)) {
+			status = "Book Updated Successfully";
+			statusCode = HttpStatus.ACCEPTED;
+		} else {
+			status = "Book Updation Unsuccessful";
 			statusCode = HttpStatus.NOT_FOUND;
 		}
 		return new ResponseEntity<>(status, statusCode);

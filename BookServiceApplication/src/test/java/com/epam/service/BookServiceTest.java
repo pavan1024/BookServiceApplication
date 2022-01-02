@@ -120,5 +120,18 @@ class BookServiceTest {
 		assertEquals("No Books", exception.getMessage());
 	}
 	
+	@Test
+	void updatebookTest() {
+		Optional<Book> optionalBook = Optional.ofNullable(book);
+		when(bookRepository.findById(2)).thenReturn(optionalBook);
+		assertTrue(bookService.updateBook(2,bookDto));
+	}
+	
+	@Test
+	void updatebookErrorTest() {
+		Throwable exception = assertThrows(BookNotFoundException.class, () -> bookService.updateBook(1,bookDto));
+		assertEquals("Book Not Found", exception.getMessage());
+	}
+	
 	
 }
