@@ -12,7 +12,6 @@ import com.epam.exception.BookAlreadyExistsException;
 import com.epam.exception.BookNotFoundException;
 import com.epam.exception.NoBooksException;
 
-
 @RestControllerAdvice
 public class RestExceptionHandler {
 	String bookService = "bookService";
@@ -20,7 +19,7 @@ public class RestExceptionHandler {
 	String timestamp = "timestamp";
 	String error = "error";
 	String status = "status";
-	
+
 	@ExceptionHandler(value = BookNotFoundException.class)
 	public Map<String, String> handleBookNotFoundException(BookNotFoundException ex) {
 		Map<String, String> response = new HashMap<>();
@@ -40,7 +39,7 @@ public class RestExceptionHandler {
 		response.put(status, HttpStatus.NOT_FOUND.name());
 		return response;
 	}
-	
+
 	@ExceptionHandler(value = NoBooksException.class)
 	public Map<String, String> handleNoBooksException(NoBooksException ex) {
 		Map<String, String> response = new HashMap<>();

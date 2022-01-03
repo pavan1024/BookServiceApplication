@@ -60,7 +60,7 @@ class BookServiceTest {
 	}
 	
 	@Test
-	void addbookTest() {
+	void addBookTest() {
 		when(mapper.map(bookDto, Book.class)).thenReturn(book);
 		Optional<Book> optionalBook = Optional.empty();
 		when(bookRepository.findByName(bookDto.getName())).thenReturn(optionalBook);
@@ -68,7 +68,7 @@ class BookServiceTest {
 	}
 	
 	@Test
-	void addbookErrorTest() {
+	void addBookErrorTest() {
 		Optional<Book> optionalBook = Optional.ofNullable(book);
 		when(bookRepository.findByName(bookDto.getName())).thenReturn(optionalBook);
 		Throwable exception = assertThrows(BookAlreadyExistsException.class, () -> bookService.addBook(bookDto));
@@ -76,14 +76,14 @@ class BookServiceTest {
 	}
 	
 	@Test
-	void deletebookTest() {
+	void deleteBookTest() {
 		Optional<Book> optionalBook = Optional.ofNullable(book);
 		when(bookRepository.findById(2)).thenReturn(optionalBook);
 		assertTrue(bookService.deleteBook(2));
 	}
 	
 	@Test
-	void deletebookErrorTest() {
+	void deleteBookErrorTest() {
 		Throwable exception = assertThrows(BookNotFoundException.class, () -> bookService.deleteBook(1));
 		assertEquals("Book Not Found", exception.getMessage());
 	}
@@ -121,14 +121,14 @@ class BookServiceTest {
 	}
 	
 	@Test
-	void updatebookTest() {
+	void updateBookTest() {
 		Optional<Book> optionalBook = Optional.ofNullable(book);
 		when(bookRepository.findById(2)).thenReturn(optionalBook);
 		assertTrue(bookService.updateBook(2,bookDto));
 	}
 	
 	@Test
-	void updatebookErrorTest() {
+	void updateBookErrorTest() {
 		Throwable exception = assertThrows(BookNotFoundException.class, () -> bookService.updateBook(1,bookDto));
 		assertEquals("Book Not Found", exception.getMessage());
 	}
