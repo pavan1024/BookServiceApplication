@@ -1,6 +1,7 @@
 package com.epam.exceptionhandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -8,12 +9,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import com.epam.dto.BookDto;
@@ -87,16 +91,14 @@ class RestExceptionHandlerTest {
 		assertEquals("Book Not Found",data.get("error"));
 	}
 	
-//	@Test
-//	void handlerBookAlreadyExistsExceptionTest() throws Exception {
-////		Optional<Book> optionalBook = Optional.ofNullable(book);
-////		when(bookRepository.findById(1)).thenReturn(optionalBook);
-//		when(bookService.addBook(bookDto)).thenThrow(new BookAlreadyExistsException("Book Already Exists"));
-//		MvcResult result = mockMvc.perform(post("/books/"))
-//				.andExpect(status().isBadRequest()).andReturn();
-//		String response = result.getResponse().getContentAsString();
-//		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
-//		assertEquals("Book Already Exists",data.get("error"));
-//	}
-	
+	@Test
+	void handlerBookAlreadyExistsExceptionTest() throws Exception {
+		when(bookService.addBook(any())).thenThrow(new BookAlreadyExistsException("Book Already Exists"));
+		MvcResult result = mockMvc.perform(post("/books/").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(bookDto)).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+		String response = result.getResponse().getContentAsString();
+		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
+		assertEquals("Book Already Exists",data.get("error"));
+	}
 }
