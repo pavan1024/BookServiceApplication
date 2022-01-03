@@ -13,16 +13,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Book {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name="BOOK_ID",updatable=false,nullable=false)
+	@Column(name = "BOOK_ID", updatable = false, nullable = false)
 	int id;
-	@Column(name="BOOK_NAME",nullable=false)
+	@Column(name = "BOOK_NAME", nullable = false)
 	String name;
-	@Column(name = "PUBLISHER",nullable=false)
+	@Column(name = "PUBLISHER", nullable = false)
 	String publisher;
-	@Column(name = "AUTHOR",nullable=false)
+	@Column(name = "AUTHOR", nullable = false)
 	String author;
-	
+
 }

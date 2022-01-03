@@ -34,8 +34,8 @@ public class BookController {
 	}
 
 	@GetMapping("/{book_id}")
-	public ResponseEntity<Book> getBook(@PathVariable int book_id) throws BookNotFoundException {
-		return new ResponseEntity<>(bookService.getBook(book_id), HttpStatus.OK);
+	public ResponseEntity<Book> getBook(@PathVariable("book_id") int bookId) throws BookNotFoundException {
+		return new ResponseEntity<>(bookService.getBook(bookId), HttpStatus.OK);
 	}
 
 	@PostMapping
@@ -44,14 +44,14 @@ public class BookController {
 	}
 
 	@DeleteMapping("/{book_id}")
-	public ResponseEntity<String> deleteBook(@PathVariable int book_id) throws BookNotFoundException {
-		return new ResponseEntity<>(bookService.deleteBook(book_id), HttpStatus.NO_CONTENT);
+	public ResponseEntity<String> deleteBook(@PathVariable("book_id") int bookId) throws BookNotFoundException {
+		return new ResponseEntity<>(bookService.deleteBook(bookId), HttpStatus.NO_CONTENT);
 	}
 
 	@PutMapping("/{book_id}")
-	public ResponseEntity<BookDto> updateBook(@PathVariable int book_id, @RequestBody BookDto bookDto)
+	public ResponseEntity<BookDto> updateBook(@PathVariable("book_id") int bookId, @RequestBody BookDto bookDto)
 			throws BookNotFoundException {
-		return new ResponseEntity<>(bookService.updateBook(book_id, bookDto), HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(bookService.updateBook(bookId, bookDto), HttpStatus.ACCEPTED);
 	}
 
 }

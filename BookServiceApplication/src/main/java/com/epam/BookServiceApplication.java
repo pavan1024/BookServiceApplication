@@ -11,10 +11,10 @@ public class BookServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BookServiceApplication.class, args);
 	}
+
 	@Bean
 	public ModelMapper getMapper() {
 		return new ModelMapper();
 	}
-
 
 }

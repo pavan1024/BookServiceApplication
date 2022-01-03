@@ -20,6 +20,7 @@ public class BookService {
 	BookRepository bookRepository;
 	@Autowired
 	ModelMapper mapper;
+	String bookNotFound = "Book Not Found";
 
 	public List<Book> fetchAllBooks() throws NoBooksException {
 		List<Book> books = (List<Book>) bookRepository.findAll();
@@ -30,37 +31,35 @@ public class BookService {
 	}
 
 	public Book getBook(int id) throws BookNotFoundException {
-		return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book Not Found"));
+		return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(bookNotFound));
 	}
 
 	public BookDto addBook(BookDto bookDto) throws BookAlreadyExistsException {
 		BookDto bookDto1 = null;
 		Book book = mapper.map(bookDto, Book.class);
-		Optional<Book> book1= bookRepository.findByName(bookDto.getName());
-		if(book1.isEmpty()) {
+		Optional<Book> book1 = bookRepository.findByName(bookDto.getName());
+		if (book1.isEmpty()) {
 			bookRepository.save(book);
 			bookDto1 = mapper.map(book, BookDto.class);
-		}
-		else {
+		} else {
 			throw new BookAlreadyExistsException("Book Already Exists");
 		}
 		return bookDto1;
 	}
 
 	public String deleteBook(int id) throws BookNotFoundException {
-		Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book Not Found"));
+		Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(bookNotFound));
 		bookRepository.delete(book);
 		return "Book Deleted Successfully";
 	}
 
 	public BookDto updateBook(int id, BookDto bookDto) throws BookNotFoundException {
-		Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book Not Found"));
+		Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(bookNotFound));
 		book.setName(bookDto.getName());
 		book.setAuthor(bookDto.getAuthor());
 		book.setPublisher(bookDto.getPublisher());
 		bookRepository.save(book);
-		BookDto bookDto1  = mapper.map(book, BookDto.class);
-		return bookDto1;
+		return mapper.map(book, BookDto.class);
 	}
 
 }

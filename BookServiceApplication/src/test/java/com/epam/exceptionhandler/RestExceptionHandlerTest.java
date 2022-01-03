@@ -30,31 +30,30 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 @AutoConfigureMockMvc
 @SpringBootTest
 class RestExceptionHandlerTest {
 	@Autowired
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	ObjectMapper mapper;
-	
+
 	@MockBean
 	BookService bookService;
-	
+
 	@MockBean
 	BookRepository bookRepository;
-	
-	
+
 	BookDto bookDto;
 	Book book;
-	
-	protected <T> T mapFromJson(String json, Class<T> clazz) throws JsonParseException,JsonMappingException, IOException {
+
+	protected <T> T mapFromJson(String json, Class<T> clazz)
+			throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readValue(json, clazz);
 	}
-	
+
 	@BeforeEach
 	void setUp() {
 		bookDto = new BookDto();
@@ -62,42 +61,41 @@ class RestExceptionHandlerTest {
 		bookDto.setAuthor("bookauthor");
 		bookDto.setPublisher("bookpublisher");
 		bookDto.setId(1);
-		
+
 		book = new Book();
 		book.setName("bookname");
 		book.setAuthor("bookauthor");
 		book.setPublisher("bookpublisher");
 		book.setId(1);
 	}
-	
+
 	@Test
 	void handlerBookNotFoundExceptionTest() throws Exception {
 		when(bookService.getBook(2)).thenThrow(new BookNotFoundException("Book Not Found"));
-		MvcResult result = mockMvc.perform(get("/books/2"))
-				.andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/books/2")).andExpect(status().isOk()).andReturn();
 		String response = result.getResponse().getContentAsString();
-		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
-		assertEquals("Book Not Found",data.get("error"));
+		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
+		assertEquals("Book Not Found", data.get("error"));
 	}
-	
+
 	@Test
 	void handlerBookNotFoundExceptionTest2() throws Exception {
 		when(bookService.fetchAllBooks()).thenThrow(new NoBooksException("Book Not Found"));
-		MvcResult result = mockMvc.perform(get("/books/"))
-				.andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/books/")).andExpect(status().isOk()).andReturn();
 		String response = result.getResponse().getContentAsString();
-		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
-		assertEquals("Book Not Found",data.get("error"));
+		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
+		assertEquals("Book Not Found", data.get("error"));
 	}
-	
+
 	@Test
 	void handlerBookAlreadyExistsExceptionTest() throws Exception {
 		when(bookService.addBook(any())).thenThrow(new BookAlreadyExistsException("Book Already Exists"));
-		MvcResult result = mockMvc.perform(post("/books/").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(bookDto)).accept(MediaType.APPLICATION_JSON))
+		MvcResult result = mockMvc
+				.perform(post("/books/").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(bookDto)).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		String response = result.getResponse().getContentAsString();
-		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
-		assertEquals("Book Already Exists",data.get("error"));
+		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
+		assertEquals("Book Already Exists", data.get("error"));
 	}
 }
