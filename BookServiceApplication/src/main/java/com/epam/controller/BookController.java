@@ -29,60 +29,29 @@ public class BookController {
 	private BookService bookService;
 
 	@GetMapping
-	public ResponseEntity<List<Book>> getAllBooks() throws NoBooksException{
+	public ResponseEntity<List<Book>> getAllBooks() throws NoBooksException {
 		return new ResponseEntity<>(bookService.fetchAllBooks(), HttpStatus.OK);
 	}
+
 	@GetMapping("/{book_id}")
-	public ResponseEntity<Book> getBook(@PathVariable int book_id) throws BookNotFoundException{
-		Book book = null;
-		HttpStatus statusCode = null;
-		if(bookService.getBook(book_id)!=null) {
-			book = bookService.getBook(book_id);
-			statusCode = HttpStatus.OK;
-		}
-		return new ResponseEntity<>(book,statusCode);
+	public ResponseEntity<Book> getBook(@PathVariable int book_id) throws BookNotFoundException {
+		return new ResponseEntity<>(bookService.getBook(book_id), HttpStatus.OK);
 	}
 
 	@PostMapping
-	public ResponseEntity<String> addBook(@RequestBody BookDto bookDto) throws BookAlreadyExistsException{
-		String status = "";
-		HttpStatus statusCode = null;
-		if (bookService.addBook(bookDto)) {
-			status = "Book Added Successfully";
-			statusCode = HttpStatus.ACCEPTED;
-		} else {
-			status = "Book Addition Unsuccessful";
-			statusCode = HttpStatus.NOT_FOUND;
-		}
-		return new ResponseEntity<>(status, statusCode);
+	public ResponseEntity<BookDto> addBook(@RequestBody BookDto bookDto) throws BookAlreadyExistsException {
+		return new ResponseEntity<>(bookService.addBook(bookDto), HttpStatus.CREATED);
 	}
-	
+
 	@DeleteMapping("/{book_id}")
-	public ResponseEntity<String> deleteBook(@PathVariable int book_id) throws BookNotFoundException{
-		String status = "";
-		HttpStatus statusCode = null;
-		if (bookService.deleteBook(book_id)) {
-			status = "Book Deleted Successfully";
-			statusCode = HttpStatus.ACCEPTED;
-		} else {
-			status = "Book Deletion Unsuccessful";
-			statusCode = HttpStatus.NOT_FOUND;
-		}
-		return new ResponseEntity<>(status, statusCode);
+	public ResponseEntity<String> deleteBook(@PathVariable int book_id) throws BookNotFoundException {
+		return new ResponseEntity<>(bookService.deleteBook(book_id), HttpStatus.NO_CONTENT);
 	}
-	
+
 	@PutMapping("/{book_id}")
-	public ResponseEntity<String> updateBook(@PathVariable int book_id,@RequestBody BookDto bookDto) throws BookNotFoundException{
-		String status = "";
-		HttpStatus statusCode = null;
-		if (bookService.updateBook(book_id,bookDto)) {
-			status = "Book Updated Successfully";
-			statusCode = HttpStatus.ACCEPTED;
-		} else {
-			status = "Book Updation Unsuccessful";
-			statusCode = HttpStatus.NOT_FOUND;
-		}
-		return new ResponseEntity<>(status, statusCode);
+	public ResponseEntity<BookDto> updateBook(@PathVariable int book_id, @RequestBody BookDto bookDto)
+			throws BookNotFoundException {
+		return new ResponseEntity<>(bookService.updateBook(book_id, bookDto), HttpStatus.ACCEPTED);
 	}
 
 }

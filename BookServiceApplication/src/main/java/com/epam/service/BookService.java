@@ -1,6 +1,5 @@
 package com.epam.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +22,7 @@ public class BookService {
 	ModelMapper mapper;
 
 	public List<Book> fetchAllBooks() throws NoBooksException {
-		List<Book> books = new ArrayList<>();
-		books = (List<Book>) bookRepository.findAll();
+		List<Book> books = (List<Book>) bookRepository.findAll();
 		if (books.isEmpty()) {
 			throw new NoBooksException("No Books");
 		}
@@ -32,54 +30,51 @@ public class BookService {
 	}
 
 	public Book getBook(int id) throws BookNotFoundException {
-		Book retrivedBook = null;
-		Optional<Book> book = bookRepository.findById(id);
-		if (book.isPresent()) {
-			retrivedBook = book.get();
-		} else {
-			throw new BookNotFoundException("Book Not Found");
-		}
-		return retrivedBook;
+		return bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book Not Found"));
 	}
 
-	public boolean addBook(BookDto bookDto) throws BookAlreadyExistsException {
-		boolean status = false;
-		Optional<Book> optionalBook = bookRepository.findByName(bookDto.getName());
+	public BookDto addBook(BookDto bookDto) throws BookAlreadyExistsException {
+//		BookDto bookDto1 = null;
+//		Book book = mapper.map(bookDto, Book.class);
+//		Optional<Book> optionalBook = bookRepository.findByName(bookDto.getName());
+//		if (!optionalBook.isPresent()) {
+//			bookRepository.save(book);
+//			bookDto1 = mapper.map(book, BookDto.class);
+//		} else {
+//			throw new BookAlreadyExistsException("Book Already Exists");
+//		}
+//		return bookDto1;
+		BookDto bookDto1 = null;
 		Book book = mapper.map(bookDto, Book.class);
-		if (!optionalBook.isPresent()) {
+		Optional<Book> book1= bookRepository.findByName(bookDto.getName());
+		if(book1.isEmpty()) {
 			bookRepository.save(book);
-			status = true;
-		} else {
+			bookDto1 = mapper.map(book, BookDto.class);
+		}
+		else {
 			throw new BookAlreadyExistsException("Book Already Exists");
 		}
-		return status;
+		return bookDto1;
 	}
 
-	public boolean deleteBook(int id) throws BookNotFoundException {
-		boolean status = false;
-		Optional<Book> book = bookRepository.findById(id);
-		if (book.isPresent()) {
-			bookRepository.delete(book.get());
-			status = true;
-		} else {
-			throw new BookNotFoundException("Book Not Found");
+	public String deleteBook(int id) throws BookNotFoundException {
+		String status = "";
+		Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book Not Found"));
+		if (book != null) {
+			bookRepository.delete(book);
+			status = "Book Deleted Successfully";
 		}
 		return status;
 	}
 
-	public boolean updateBook(int id, BookDto bookDto) throws BookNotFoundException {
-		boolean status = false;
-		Optional<Book> book = bookRepository.findById(id);
-		if (book.isPresent()) {
-			book.get().setName(bookDto.getName());
-			book.get().setAuthor(bookDto.getAuthor());
-			book.get().setPublisher(bookDto.getPublisher());
-			bookRepository.save(book.get());
-			status = true;
-		} else {
-			throw new BookNotFoundException("Book Not Found");
-		}
-		return status;
+	public BookDto updateBook(int id, BookDto bookDto) throws BookNotFoundException {
+		Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book Not Found"));
+		book.setName(bookDto.getName());
+		book.setAuthor(bookDto.getAuthor());
+		book.setPublisher(bookDto.getPublisher());
+		bookRepository.save(book);
+		BookDto bookDto1  = mapper.map(book, BookDto.class);
+		return bookDto1;
 	}
 
 }

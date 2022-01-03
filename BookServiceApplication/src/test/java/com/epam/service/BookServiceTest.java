@@ -1,9 +1,7 @@
 package com.epam.service;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -29,18 +27,17 @@ class BookServiceTest {
 
 	@Mock
 	BookRepository bookRepository;
-	
+
 	@Mock
 	ModelMapper mapper;
-	
+
 	@InjectMocks
 	BookService bookService;
-	
+
 	Book book;
 	BookDto bookDto;
 	List<Book> books;
-	
-	
+
 	@BeforeEach
 	void setUp() {
 		book = new Book();
@@ -48,25 +45,26 @@ class BookServiceTest {
 		book.setName("book");
 		book.setAuthor("bookauthor");
 		book.setPublisher("bookpublisher");
-		
+
 		bookDto = new BookDto();
 		bookDto.setId(2);
 		bookDto.setName("newBook");
 		bookDto.setAuthor("newBookAuthor");
 		bookDto.setPublisher("newbookpublisher");
-		
+
 		books = new ArrayList<>();
 		books.add(book);
 	}
-	
+
 	@Test
 	void addBookTest() {
 		when(mapper.map(bookDto, Book.class)).thenReturn(book);
+		when(mapper.map(book, BookDto.class)).thenReturn(bookDto);
 		Optional<Book> optionalBook = Optional.empty();
 		when(bookRepository.findByName(bookDto.getName())).thenReturn(optionalBook);
-		assertTrue(bookService.addBook(bookDto));
+		assertEquals(bookDto, bookService.addBook(bookDto));
 	}
-	
+
 	@Test
 	void addBookErrorTest() {
 		Optional<Book> optionalBook = Optional.ofNullable(book);
@@ -74,20 +72,20 @@ class BookServiceTest {
 		Throwable exception = assertThrows(BookAlreadyExistsException.class, () -> bookService.addBook(bookDto));
 		assertEquals("Book Already Exists", exception.getMessage());
 	}
-	
+
 	@Test
 	void deleteBookTest() {
 		Optional<Book> optionalBook = Optional.ofNullable(book);
 		when(bookRepository.findById(2)).thenReturn(optionalBook);
-		assertTrue(bookService.deleteBook(2));
+		assertEquals("Book Deleted Successfully", bookService.deleteBook(2));
 	}
-	
+
 	@Test
 	void deleteBookErrorTest() {
 		Throwable exception = assertThrows(BookNotFoundException.class, () -> bookService.deleteBook(1));
 		assertEquals("Book Not Found", exception.getMessage());
 	}
-	
+
 	@Test
 	void getBookTest() {
 		Book book1 = new Book();
@@ -97,21 +95,21 @@ class BookServiceTest {
 		book1.setPublisher("newbookpublisher");
 		Optional<Book> optionalBook = Optional.ofNullable(book1);
 		when(bookRepository.findById(2)).thenReturn(optionalBook);
-		assertEquals(book1,bookService.getBook(2));
+		assertEquals(book1, bookService.getBook(2));
 	}
-	
+
 	@Test
 	void getBookErrorTest() {
 		Throwable exception = assertThrows(BookNotFoundException.class, () -> bookService.getBook(1));
 		assertEquals("Book Not Found", exception.getMessage());
 	}
-	
+
 	@Test
 	void getAllBooksTest() {
 		when(bookRepository.findAll()).thenReturn(books);
 		assertEquals(books, bookService.fetchAllBooks());
 	}
-	
+
 	@Test
 	void getAllBooksErrorTest() {
 		List<Book> emptyBooks = new ArrayList<>();
@@ -119,19 +117,19 @@ class BookServiceTest {
 		Throwable exception = assertThrows(NoBooksException.class, () -> bookService.fetchAllBooks());
 		assertEquals("No Books", exception.getMessage());
 	}
-	
+
 	@Test
 	void updateBookTest() {
+		when(mapper.map(book, BookDto.class)).thenReturn(bookDto);
 		Optional<Book> optionalBook = Optional.ofNullable(book);
 		when(bookRepository.findById(2)).thenReturn(optionalBook);
-		assertTrue(bookService.updateBook(2,bookDto));
+		assertEquals(bookDto, bookService.updateBook(2, bookDto));
 	}
-	
+
 	@Test
 	void updateBookErrorTest() {
-		Throwable exception = assertThrows(BookNotFoundException.class, () -> bookService.updateBook(1,bookDto));
+		Throwable exception = assertThrows(BookNotFoundException.class, () -> bookService.updateBook(1, bookDto));
 		assertEquals("Book Not Found", exception.getMessage());
 	}
-	
-	
+
 }
