@@ -34,16 +34,6 @@ public class BookService {
 	}
 
 	public BookDto addBook(BookDto bookDto) throws BookAlreadyExistsException {
-//		BookDto bookDto1 = null;
-//		Book book = mapper.map(bookDto, Book.class);
-//		Optional<Book> optionalBook = bookRepository.findByName(bookDto.getName());
-//		if (!optionalBook.isPresent()) {
-//			bookRepository.save(book);
-//			bookDto1 = mapper.map(book, BookDto.class);
-//		} else {
-//			throw new BookAlreadyExistsException("Book Already Exists");
-//		}
-//		return bookDto1;
 		BookDto bookDto1 = null;
 		Book book = mapper.map(bookDto, Book.class);
 		Optional<Book> book1= bookRepository.findByName(bookDto.getName());
@@ -58,13 +48,9 @@ public class BookService {
 	}
 
 	public String deleteBook(int id) throws BookNotFoundException {
-		String status = "";
 		Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Book Not Found"));
-		if (book != null) {
-			bookRepository.delete(book);
-			status = "Book Deleted Successfully";
-		}
-		return status;
+		bookRepository.delete(book);
+		return "Book Deleted Successfully";
 	}
 
 	public BookDto updateBook(int id, BookDto bookDto) throws BookNotFoundException {
