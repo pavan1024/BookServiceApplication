@@ -36,7 +36,7 @@ public class RestExceptionHandler {
 		response.put(bookService, books);
 		response.put(timestamp, new Date().toString());
 		response.put(error, ex.getMessage());
-		response.put(status, HttpStatus.NOT_FOUND.name());
+		response.put(status, HttpStatus.CONFLICT.name());
 		return response;
 	}
 
