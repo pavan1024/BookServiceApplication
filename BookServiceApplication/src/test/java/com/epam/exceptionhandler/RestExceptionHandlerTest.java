@@ -72,16 +72,16 @@ class RestExceptionHandlerTest {
 	@Test
 	void handlerBookNotFoundExceptionTest() throws Exception {
 		when(bookService.getBook(2)).thenThrow(new BookNotFoundException("Book Not Found"));
-		MvcResult result = mockMvc.perform(get("/books/2")).andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/books/2")).andExpect(status().isNotFound()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
 		assertEquals("Book Not Found", data.get("error"));
 	}
 
 	@Test
-	void handlerBookNotFoundExceptionTest2() throws Exception {
+	void handlerNoBooksExceptionTest() throws Exception {
 		when(bookService.fetchAllBooks()).thenThrow(new NoBooksException("Book Not Found"));
-		MvcResult result = mockMvc.perform(get("/books/")).andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/books/")).andExpect(status().isNotFound()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
 		assertEquals("Book Not Found", data.get("error"));
@@ -93,7 +93,7 @@ class RestExceptionHandlerTest {
 		MvcResult result = mockMvc
 				.perform(post("/books/").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(bookDto)).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk()).andReturn();
+				.andExpect(status().isConflict()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
 		assertEquals("Book Already Exists", data.get("error"));

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,32 +22,32 @@ public class RestExceptionHandler {
 	String status = "status";
 
 	@ExceptionHandler(value = BookNotFoundException.class)
-	public Map<String, String> handleBookNotFoundException(BookNotFoundException ex) {
+	public ResponseEntity<Map<String, String>> handleBookNotFoundException(BookNotFoundException ex) {
 		Map<String, String> response = new HashMap<>();
 		response.put(bookService, books);
 		response.put(timestamp, new Date().toString());
 		response.put(error, ex.getMessage());
 		response.put(status, HttpStatus.NOT_FOUND.name());
-		return response;
+		return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(value = BookAlreadyExistsException.class)
-	public Map<String, String> handleBookAlreadyExistsException(BookAlreadyExistsException ex) {
+	public ResponseEntity<Map<String, String>> handleBookAlreadyExistsException(BookAlreadyExistsException ex) {
 		Map<String, String> response = new HashMap<>();
 		response.put(bookService, books);
 		response.put(timestamp, new Date().toString());
 		response.put(error, ex.getMessage());
 		response.put(status, HttpStatus.CONFLICT.name());
-		return response;
+		return new ResponseEntity<>(response,HttpStatus.CONFLICT);
 	}
 
 	@ExceptionHandler(value = NoBooksException.class)
-	public Map<String, String> handleNoBooksException(NoBooksException ex) {
+	public ResponseEntity<Map<String, String>> handleNoBooksException(NoBooksException ex) {
 		Map<String, String> response = new HashMap<>();
 		response.put(bookService, books);
 		response.put(timestamp, new Date().toString());
 		response.put(error, ex.getMessage());
 		response.put(status, HttpStatus.NOT_FOUND.name());
-		return response;
+		return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
 	}
 }
