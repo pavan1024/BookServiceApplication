@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "exchange.url",
+  "type": "java.lang.String",
+  "description": "A description for 'exchange.url'"
+}]}
