@@ -19,7 +19,6 @@ import com.epam.dto.BookDto;
 import com.epam.entity.Book;
 import com.epam.exception.BookAlreadyExistsException;
 import com.epam.exception.BookNotFoundException;
-import com.epam.exception.NoBooksException;
 import com.epam.repo.BookRepository;
 
 @SpringBootTest
@@ -108,14 +107,6 @@ class BookServiceTest {
 	void getAllBooksTest() {
 		when(bookRepository.findAll()).thenReturn(books);
 		assertEquals(books, bookService.fetchAllBooks());
-	}
-
-	@Test
-	void getAllBooksErrorTest() {
-		List<Book> emptyBooks = new ArrayList<>();
-		when(bookRepository.findAll()).thenReturn(emptyBooks);
-		Throwable exception = assertThrows(NoBooksException.class, () -> bookService.fetchAllBooks());
-		assertEquals("No Books", exception.getMessage());
 	}
 
 	@Test

@@ -23,7 +23,6 @@ import com.epam.dto.BookDto;
 import com.epam.entity.Book;
 import com.epam.exception.BookAlreadyExistsException;
 import com.epam.exception.BookNotFoundException;
-import com.epam.exception.NoBooksException;
 import com.epam.repo.BookRepository;
 import com.epam.service.BookService;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -79,21 +78,12 @@ class RestExceptionHandlerTest {
 	}
 
 	@Test
-	void handlerNoBooksExceptionTest() throws Exception {
-		when(bookService.fetchAllBooks()).thenThrow(new NoBooksException("Book Not Found"));
-		MvcResult result = mockMvc.perform(get("/books/")).andExpect(status().isNotFound()).andReturn();
-		String response = result.getResponse().getContentAsString();
-		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
-		assertEquals("Book Not Found", data.get("error"));
-	}
-
-	@Test
 	void handlerBookAlreadyExistsExceptionTest() throws Exception {
 		when(bookService.addBook(any())).thenThrow(new BookAlreadyExistsException("Book Already Exists"));
 		MvcResult result = mockMvc
 				.perform(post("/books/").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(bookDto)).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isConflict()).andReturn();
+				.andExpect(status().isNotFound()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
 		assertEquals("Book Already Exists", data.get("error"));

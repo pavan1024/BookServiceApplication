@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.epam.exception.BookAlreadyExistsException;
 import com.epam.exception.BookNotFoundException;
-import com.epam.exception.NoBooksException;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
@@ -33,16 +32,6 @@ public class RestExceptionHandler {
 
 	@ExceptionHandler(value = BookAlreadyExistsException.class)
 	public ResponseEntity<Map<String, String>> handleBookAlreadyExistsException(BookAlreadyExistsException ex) {
-		Map<String, String> response = new HashMap<>();
-		response.put(bookService, books);
-		response.put(timestamp, new Date().toString());
-		response.put(error, ex.getMessage());
-		response.put(status, HttpStatus.CONFLICT.name());
-		return new ResponseEntity<>(response,HttpStatus.CONFLICT);
-	}
-
-	@ExceptionHandler(value = NoBooksException.class)
-	public ResponseEntity<Map<String, String>> handleNoBooksException(NoBooksException ex) {
 		Map<String, String> response = new HashMap<>();
 		response.put(bookService, books);
 		response.put(timestamp, new Date().toString());

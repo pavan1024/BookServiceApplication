@@ -97,7 +97,7 @@ class BookControllerTest {
 		MvcResult result = mockMvc
 				.perform(put("/books/1").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(bookDto)).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isAccepted()).andReturn();
+				.andExpect(status().isOk()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		assertEquals("", response);
 	}

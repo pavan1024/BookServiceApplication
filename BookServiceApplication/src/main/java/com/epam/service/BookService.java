@@ -11,7 +11,6 @@ import com.epam.dto.BookDto;
 import com.epam.entity.Book;
 import com.epam.exception.BookAlreadyExistsException;
 import com.epam.exception.BookNotFoundException;
-import com.epam.exception.NoBooksException;
 import com.epam.repo.BookRepository;
 
 @Service
@@ -22,12 +21,8 @@ public class BookService {
 	ModelMapper mapper;
 	String bookNotFound = "Book Not Found";
 
-	public List<Book> fetchAllBooks() throws NoBooksException {
-		List<Book> books = (List<Book>) bookRepository.findAll();
-		if (books.isEmpty()) {
-			throw new NoBooksException("No Books");
-		}
-		return books;
+	public List<Book> fetchAllBooks() {
+		return (List<Book>) bookRepository.findAll();
 	}
 
 	public Book getBook(int id) throws BookNotFoundException {
@@ -35,16 +30,14 @@ public class BookService {
 	}
 
 	public BookDto addBook(BookDto bookDto) throws BookAlreadyExistsException {
-		BookDto retrievedBookDto;
-		Book book = mapper.map(bookDto, Book.class);
 		Optional<Book> retrievedBook = bookRepository.findByName(bookDto.getName());
-		if (retrievedBook.isEmpty()) {
-			bookRepository.save(book);
-			retrievedBookDto = mapper.map(book, BookDto.class);
-		} else {
+		if (retrievedBook.isPresent()) {
 			throw new BookAlreadyExistsException("Book Already Exists");
 		}
-		return retrievedBookDto;
+		Book book = mapper.map(bookDto, Book.class);
+		bookRepository.save(book);
+		bookDto.setId(book.getId());
+		return bookDto;
 	}
 
 	public String deleteBook(int id) throws BookNotFoundException {
@@ -54,12 +47,11 @@ public class BookService {
 	}
 
 	public BookDto updateBook(int id, BookDto bookDto) throws BookNotFoundException {
-		Book book = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(bookNotFound));
-		book.setName(bookDto.getName());
-		book.setAuthor(bookDto.getAuthor());
-		book.setPublisher(bookDto.getPublisher());
-		bookRepository.save(book);
-		return mapper.map(book, BookDto.class);
+		Book retrievedBook = bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(bookNotFound));
+		bookDto.setId(id);
+		mapper.map(bookDto, Book.class);
+		bookRepository.save(retrievedBook);
+		return bookDto;
 	}
 
 }

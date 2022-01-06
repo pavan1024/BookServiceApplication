@@ -18,7 +18,6 @@ import com.epam.dto.BookDto;
 import com.epam.entity.Book;
 import com.epam.exception.BookAlreadyExistsException;
 import com.epam.exception.BookNotFoundException;
-import com.epam.exception.NoBooksException;
 import com.epam.service.BookService;
 
 @RestController
@@ -29,7 +28,7 @@ public class BookController {
 	private BookService bookService;
 
 	@GetMapping
-	public ResponseEntity<List<Book>> getAllBooks() throws NoBooksException {
+	public ResponseEntity<List<Book>> getAllBooks() {
 		return new ResponseEntity<>(bookService.fetchAllBooks(), HttpStatus.OK);
 	}
 
@@ -51,7 +50,7 @@ public class BookController {
 	@PutMapping("/{book_id}")
 	public ResponseEntity<BookDto> updateBook(@PathVariable("book_id") int bookId, @RequestBody BookDto bookDto)
 			throws BookNotFoundException {
-		return new ResponseEntity<>(bookService.updateBook(bookId, bookDto), HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(bookService.updateBook(bookId, bookDto), HttpStatus.OK);
 	}
 
 }
